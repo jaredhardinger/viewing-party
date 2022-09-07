@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Landing Page' do
   before :each do
-    @eli = User.create!(name: 'Eli', email: 'es@g')
-    @sunny = User.create!(name: 'Sunny', email: 'sm@g')
+    @john = User.create!(name: 'john', email: 'john@example.com', password: 'abc', password_confirmation: 'abc')
+    @susie = User.create!(name: 'susie', email: 'susie@example.com', password: '123', password_confirmation: '123')
 
     visit '/'
   end
@@ -21,14 +21,14 @@ RSpec.describe 'Landing Page' do
   end
 
   it 'lists existing users with links to dashboard' do
-    within "#user-#{@eli.id}" do
-      expect(page).to have_link('Eli')
+    within "#user-#{@john.id}" do
+      expect(page).to have_link('john')
     end
 
-    within "#user-#{@sunny.id}" do
-      expect(page).to have_link('Sunny')
-      click_on 'Sunny'
-      expect(current_path).to eq("/users/#{@sunny.id}")
+    within "#user-#{@susie.id}" do
+      expect(page).to have_link('susie')
+      click_on 'susie'
+      expect(current_path).to eq("/users/#{@susie.id}")
     end
   end
 
@@ -37,4 +37,32 @@ RSpec.describe 'Landing Page' do
     click_on 'Home'
     expect(current_path).to eq('/')
   end
+
+  it "can log in with valid credentials" do
+    click_on "Log In"
+
+    expect(current_path).to eq(login_path)
+
+    fill_in :email, with: @john.email
+    fill_in :password, with: @john.password
+
+    click_on "Log In"
+
+    expect(current_path).to eq(root_path)
+
+    expect(page).to have_content("Welcome, #{@john.name}")
+  end
+  
+  it "cannot log in with bad credentials" do
+    visit login_path
+
+    fill_in :email, with: @john.email
+    fill_in :password, with: "incorrect password"
+
+    click_on "Log In"
+
+    expect(current_path).to eq(login_path)
+
+    expect(page).to have_content("Sorry, your credentials are bad.")
+end
 end

@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   root to: 'users#index'
   get '/register', to: 'users#new'
+  get '/login', to: 'users#login_form'
+  post '/login', to: 'users#login'
 
   resources :users, only: %i[show create] do
     resources :movies, only: %i[index show] do
@@ -11,5 +13,4 @@ Rails.application.routes.draw do
   end
 
   get '/users/:user_id/discover', to: 'movies#discover'
-  # get '/users/:user_id/movies/:movie_id/viewing-party/new', to: 'parties#new'
 end
