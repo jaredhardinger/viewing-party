@@ -4,9 +4,12 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe 'validations' do
-    it { should validate_presence_of :name }
-    it { should validate_presence_of :email }
-    it { should validate_uniqueness_of :email }
+    it { should validate_presence_of(:name) }
+    it { should validate_presence_of(:email) }
+    it { should validate_uniqueness_of(:email)}
+    it { should validate_presence_of(:password)}
+    it { should validate_presence_of(:password_confirmation)}
+    it { should have_secure_password}
   end
   describe 'relationships' do
     it { should have_many :party_users }
@@ -15,32 +18,32 @@ RSpec.describe User, type: :model do
 
   describe 'class methods' do
     before :each do
-      @eli = User.create!(name: 'Eli', email: 'es@g')
-      @sunny = User.create!(name: 'Sunny', email: 'sm@g')
-      @john = User.create!(name: 'John', email: 'jc@g')
+      @terry = User.create!(name: 'terry', email: 'terry@example.com', password: '123', password_confirmation: '123')
+      @susie = User.create!(name: 'susie', email: 'susie@example.com', password: 'abc', password_confirmation: 'abc')
+      @john = User.create!(name: 'John', email: 'john@example.com', password: 'abc123', password_confirmation: 'abc123')
 
-      @frozen = Party.create!(movie_id: 109_445, movie_title: 'Frozen', start_time: '2022-12-25 06:30:00 UTC',
+      @hannibal = Party.create!(movie_id: 109_445, movie_title: 'hannibal', start_time: '2022-12-25 06:30:00 UTC',
                               duration: 90)
-      @moana = Party.create!(movie_id: 2_277_834, movie_title: 'Moana', start_time: '2022-12-31 12:00:00 UTC',
+      @tombstone = Party.create!(movie_id: 2_277_834, movie_title: 'tombstone', start_time: '2022-12-31 12:00:00 UTC',
                              duration: 120)
 
-      @ef = PartyUser.create!(party: @frozen, user: @eli, host: true)
-      @sf = PartyUser.create!(party: @frozen, user: @sunny, host: false)
-      @jf = PartyUser.create!(party: @frozen, user: @john, host: false)
-      @sm = PartyUser.create!(party: @moana, user: @sunny, host: true)
-      @em = PartyUser.create!(party: @moana, user: @eli, host: false)
+      @th = PartyUser.create!(party: @hannibal, user: @terry, host: true)
+      @sh = PartyUser.create!(party: @hannibal, user: @susie, host: false)
+      @jh = PartyUser.create!(party: @hannibal, user: @john, host: false)
+      @st = PartyUser.create!(party: @tombstone, user: @susie, host: true)
+      @tt = PartyUser.create!(party: @tombstone, user: @terry, host: false)
     end
 
     it 'can find hosted party users' do
-      expect(@eli.hosting).to eq([@ef])
-      expect(@sunny.hosting).to eq([@sm])
+      expect(@terry.hosting).to eq([@th])
+      expect(@susie.hosting).to eq([@st])
       expect(@john.hosting).to eq([])
     end
 
     it 'can find invited party users' do
-      expect(@eli.invited).to eq([@em])
-      expect(@sunny.invited).to eq([@sf])
-      expect(@john.invited).to eq([@jf])
+      expect(@terry.invited).to eq([@tt])
+      expect(@susie.invited).to eq([@sh])
+      expect(@john.invited).to eq([@jh])
     end
   end
 end
