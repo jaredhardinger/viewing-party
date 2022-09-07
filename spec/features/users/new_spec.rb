@@ -20,19 +20,60 @@ RSpec.describe 'Register' do
     expect(page).to_not have_content("john's Dashboard")
   end
 
-  it 'sad path testing 1' do # no name
+  it 'sad path no name' do # no name
     fill_in :user_email, with: 'susie@example.com'
+    fill_in :user_password, with: '123'
+    fill_in :user_password_confirmation, with: '123'
     click_on 'Create User'
     expect(current_path).to eq('/register')
-    expect(page).to_not have_content("Susie's Dashboard")
+    expect(page).to have_content("Name can't be blank")
   end
 
-  it 'sad path testing 2' do # duplicate email
+  it 'sad path duplicate email' do 
     fill_in :user_name, with: 'Susie'
     fill_in :user_email, with: 'john@example.com'
+    fill_in :user_password, with: '123'
+    fill_in :user_password_confirmation, with: '123'
     click_on 'Create User'
     expect(current_path).to eq('/register')
-    expect(page).to_not have_content("Susie's Dashboard")
+    expect(page).to have_content("Email has already been taken")
+  end
+
+  it 'sad path no email' do 
+    fill_in :user_name, with: 'Susie'
+    fill_in :user_password, with: '123'
+    fill_in :user_password_confirmation, with: '123'
+    click_on 'Create User'
+    expect(current_path).to eq('/register')
+    expect(page).to have_content("Email can't be blank")
+  end
+
+  it 'sad path no password' do 
+    fill_in :user_name, with: 'Susie'
+    fill_in :user_email, with: 'john@example.com'
+    fill_in :user_password_confirmation, with: '123'
+    click_on 'Create User'
+    expect(current_path).to eq('/register')
+    expect(page).to have_content("Password can't be blank")
+  end
+
+  it 'sad path no password confirmation' do 
+    fill_in :user_name, with: 'Susie'
+    fill_in :user_email, with: 'john@example.com'
+    fill_in :user_password, with: '123'
+    click_on 'Create User'
+    expect(current_path).to eq('/register')
+    expect(page).to have_content("Password confirmation can't be blank")
+  end
+
+  it 'sad path password and password confirmation must match' do 
+    fill_in :user_name, with: 'Susie'
+    fill_in :user_email, with: 'john@example.com'
+    fill_in :user_password, with: '123'
+    fill_in :user_password_confirmation, with: 'abc'
+    click_on 'Create User'
+    expect(current_path).to eq('/register')
+    expect(page).to have_content("Password confirmation doesn't match Password")
   end
 
   it 'has link to landing page' do

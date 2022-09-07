@@ -1,6 +1,16 @@
+  <% if @user.errors.any? %>
+      <h2>Errors:</h2>
+      <ul>    
+          <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+          <% end %> 
+      </ul>
+  <% end %>
+
 <h3>Register a New User</h3>
 
 <%= form_with model: @user, method: :post, url: users_path, local: true do |f| %>
+ 
   <%= f.label :name %>
   <%= f.text_field :name %><br/><br/>
   <%= f.label :email %>
