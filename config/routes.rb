@@ -7,11 +7,11 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
 
-  resources :users, only: %i[show create] do
-    resources :movies, only: %i[index show] do
-      resources :parties, only: %i[new create]
-    end
-  end
-
-  get '/users/:user_id/discover', to: 'movies#discover'
+  get '/dashboard', to: 'users#show'
+  post '/dashboard', to: 'users#create'
+  get '/dashboard/discover', to: 'movies#discover'
+  get '/dashboard/movies', to: 'movies#index'
+  get '/dashboard/movies/:id', to: 'movies#show'
+  get '/dashboard/parties/new', to: 'parties#new'
+  post '/dashboard/parties', to: 'parties#create'
 end
